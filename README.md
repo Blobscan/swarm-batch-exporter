@@ -19,14 +19,27 @@ make build
 3. Scrape
 
 ```
-curl http://localhost:1640
+curl http://localhost:1640/metrics
 ```
 
 ### Docker
 
+1a. Build
+
 ```
 make docker
-docker run --rm --network host swarm-batch-exporter
+```
+
+1b. Or pull
+
+```
+docker pull blossomlabs/swarm-batch-prometheus
+```
+
+2. Run
+
+```
+docker run --rm --network host blossomlabs/swarm-batch-prometheus
 ```
 
 ## Metrics
