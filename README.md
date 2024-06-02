@@ -39,7 +39,7 @@ docker pull blossomlabs/swarm-batch-prometheus
 2. Run
 
 ```
-docker run --rm --network host blossomlabs/swarm-batch-prometheus
+docker run --rm --network host -e BEE_ENDPOINT=http://localhost:1633 blossomlabs/swarm-batch-prometheus
 ```
 
 ## Metrics

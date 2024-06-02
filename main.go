@@ -82,8 +82,9 @@ func GetStampUsage(utilization, depth, bucketDepth int) float64 {
 func fetchMetrics() {
 	url := os.Getenv("BEE_ENDPOINT")
 	if url == "" {
-		url = "http://localhost:1633/stamps"
+		url = "http://localhost:1633"
 	}
+	url += "/stamps"
 	resp, err := http.Get(url)
 	if err != nil {
 		log.Println("Error fetching data:", err)
