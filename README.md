@@ -4,41 +4,25 @@ This is a simple [Prometheus](https://prometheus.io/) exporter to expose stamp b
 
 ## Usage
 
-1. Compile
-
 ```
+# Compile
 make build
-```
 
-2. Run
-
-```
+# Run
 ./swarm-batch-exporter
 ```
 
-3. Scrape
-
 ```
+# Scrape
 curl http://localhost:1640/metrics
 ```
 
 ### Docker
 
-1a. Build
-
-```
-make docker
-```
-
-1b. Or pull
+Docker image is available at [Docker Hub](https://hub.docker.com/r/blossomlabs/swarm-batch-prometheus)
 
 ```
 docker pull blossomlabs/swarm-batch-prometheus
-```
-
-2. Run
-
-```
 docker run --rm --network host -e BEE_ENDPOINT=http://localhost:1633 blossomlabs/swarm-batch-prometheus
 ```
 
