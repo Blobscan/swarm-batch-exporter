@@ -1,6 +1,6 @@
 # Swarm batch prometheus exporter
 
-This is a simple prometheus exporter to expose Stamp batch metrics for Ethereum Swarm.
+This is a simple [Prometheus](https://prometheus.io/) exporter to expose stamp batch metrics for [Ethereum Swarm](https://www.ethswarm.org/).
 
 ## Usage
 
@@ -13,13 +13,20 @@ make build
 2. Run
 
 ```
-./swarm-exporter
+./swarm-batch-exporter
 ```
 
 3. Scrape
 
 ```
 curl http://localhost:1640
+```
+
+### Docker
+
+```
+make docker
+docker run --rm --network host swarm-batch-exporter
 ```
 
 ## Metrics
