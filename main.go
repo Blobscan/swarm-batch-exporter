@@ -31,15 +31,15 @@ type Stamp struct {
 
 var (
 	utilizationMetric = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-		Name: "swarm_stamp_batch_utilization",
+		Name: "swarm_batch_utilization",
 		Help: "Stamp batch utilization.",
 	}, []string{"batchID", "label"})
 	ttlMetric = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-		Name: "swarm_stamp_batch_ttl",
+		Name: "swarm_batch_ttl",
 		Help: "Stamp batch TTL.",
 	}, []string{"batchID", "label"})
 	depthMetric = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-		Name: "swarm_stamp_batch_depth",
+		Name: "swarm_batch_depth",
 		Help: "Stamp batch depth.",
 	}, []string{"batchID", "label"})
 	// amountMetric = prometheus.NewGaugeVec(prometheus.GaugeOpts{
@@ -47,15 +47,15 @@ var (
 	//     Help: "Stamp batch amount.",
 	// }, []string{"batchID", "label"})
 	capacityMetric = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-		Name: "swarm_stamp_batch_capacity_bytes",
+		Name: "swarm_batch_size_bytes",
 		Help: "Stamp batch total capacity in bytes.",
 	}, []string{"batchID", "label"})
 	availabilityMetric = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-		Name: "swarm_stamp_batch_available_bytes",
+		Name: "swarm_batch_avail_bytes",
 		Help: "Stamp batch available capacity in bytes.",
 	}, []string{"batchID", "label"})
 	usageMetric = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-		Name: "swarm_stamp_batch_usage_percentage",
+		Name: "swarm_batch_usage_percentage",
 		Help: "Stamp batch usage percentage.",
 	}, []string{"batchID", "label"})
 )
@@ -110,7 +110,7 @@ func fetchMetrics() {
 		stampUsage := GetStampUsage(stamp.Utilization, stamp.Depth, stamp.BucketDepth)
 		usageMetric.With(prometheus.Labels{"batchID": stamp.BatchID, "label": stamp.Label}).Set(stampUsage)
 
-		available := int(stampUsage * capacity)
+		available := capacity * (1 - stampUsage)
 		availabilityMetric.With(prometheus.Labels{"batchID": stamp.BatchID, "label": stamp.Label}).Set(float64(available))
 	}
 }
