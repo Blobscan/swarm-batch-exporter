@@ -2,13 +2,14 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"log"
 	"math"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 type APIResponse struct {
@@ -99,19 +100,25 @@ func fetchMetrics() {
 	}
 
 	for _, stamp := range apiResponse.Stamps {
-		utilizationMetric.With(prometheus.Labels{"batchID": stamp.BatchID, "label": stamp.Label}).Set(float64(stamp.Utilization))
-		ttlMetric.With(prometheus.Labels{"batchID": stamp.BatchID, "label": stamp.Label}).Set(float64(stamp.BatchTTL))
-		depthMetric.With(prometheus.Labels{"batchID": stamp.BatchID, "label": stamp.Label}).Set(float64(stamp.Depth))
-		//amountMetric.With(prometheus.Labels{"batchID": stamp.BatchID, "label": stamp.Label}).Set(float64(stamp.Amount))
+		// Check if label is empty, if so use batchID as label
+		labelValue := stamp.Label
+		if labelValue == "" {
+			labelValue = stamp.BatchID[:10]
+		}
+
+		utilizationMetric.With(prometheus.Labels{"batchID": stamp.BatchID, "label": labelValue}).Set(float64(stamp.Utilization))
+		ttlMetric.With(prometheus.Labels{"batchID": stamp.BatchID, "label": labelValue}).Set(float64(stamp.BatchTTL))
+		depthMetric.With(prometheus.Labels{"batchID": stamp.BatchID, "label": labelValue}).Set(float64(stamp.Depth))
+		//amountMetric.With(prometheus.Labels{"batchID": stamp.BatchID, "label": labelValue}).Set(float64(stamp.Amount))
 
 		capacity := GetStampMaximumCapacityBytes(stamp.Depth)
-		capacityMetric.With(prometheus.Labels{"batchID": stamp.BatchID, "label": stamp.Label}).Set(capacity)
+		capacityMetric.With(prometheus.Labels{"batchID": stamp.BatchID, "label": labelValue}).Set(capacity)
 
 		stampUsage := GetStampUsage(stamp.Utilization, stamp.Depth, stamp.BucketDepth)
-		usageMetric.With(prometheus.Labels{"batchID": stamp.BatchID, "label": stamp.Label}).Set(stampUsage)
+		usageMetric.With(prometheus.Labels{"batchID": stamp.BatchID, "label": labelValue}).Set(stampUsage)
 
 		available := capacity * (1 - stampUsage)
-		availabilityMetric.With(prometheus.Labels{"batchID": stamp.BatchID, "label": stamp.Label}).Set(float64(available))
+		availabilityMetric.With(prometheus.Labels{"batchID": stamp.BatchID, "label": labelValue}).Set(float64(available))
 	}
 }
 
